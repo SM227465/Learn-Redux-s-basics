@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { deposit, withdraw, requestLoan, payLoan } from './account.slice';
+import currencies from '../../constants/currencies';
 
 function AccountOperations() {
   const dispatch = useDispatch();
@@ -12,7 +13,7 @@ function AccountOperations() {
   const [withdrawalAmount, setWithdrawalAmount] = useState('');
   const [loanAmount, setLoanAmount] = useState('');
   const [loanPurpose, setLoanPurpose] = useState('');
-  const [currency, setCurrency] = useState('INR');
+  const [currency, setCurrency] = useState('');
 
   function handleDeposit() {
     if (!depositAmount) {
@@ -22,7 +23,7 @@ function AccountOperations() {
     dispatch(deposit(depositAmount, currency));
 
     setDepositAmount('');
-    setCurrency('INR');
+    setCurrency('');
   }
 
   function handleWithdrawal() {
@@ -62,9 +63,13 @@ function AccountOperations() {
             onChange={(e) => setDepositAmount(+e.target.value)}
           />
           <select value={currency} onChange={(e) => setCurrency(e.target.value)}>
-            <option value='USD'>US Dollar</option>
-            <option value='EUR'>Euro</option>
-            <option value='GBP'>British Pound</option>
+            <option value=''> Please select a currency</option>
+
+            {currencies.map((currency) => (
+              <option value={currency.code} key={currency.code}>
+                {currency.name} ({currency.symbol})
+              </option>
+            ))}
           </select>
 
           <button onClick={handleDeposit} disabled={account.isLoading}>
